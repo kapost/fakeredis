@@ -840,7 +840,8 @@ class Redis
 
         # Select just the keys unless we want scores
         results = results.map(&:first) unless with_scores
-        results[start..stop].flatten.map(&:to_s)
+        results = results[start..stop] || []
+        results.flatten.map(&:to_s)
       end
 
       def zrevrange(key, start, stop, with_scores = nil)
@@ -853,7 +854,8 @@ class Redis
           data[key].keys.sort_by {|k| -data[key][k] }
         end
 
-        results[start..stop].flatten.map(&:to_s)
+        results = results[start..stop] || []
+        results.flatten.map(&:to_s)
       end
 
       def zrangebyscore(key, min, max, *opts)
