@@ -837,6 +837,7 @@ class Redis
             v1 <=> v2
           end
         end
+
         # Select just the keys unless we want scores
         results = results.map(&:first) unless with_scores
         results[start..stop].flatten.map(&:to_s)
@@ -846,11 +847,13 @@ class Redis
         data_type_check(key, ZSet)
         return [] unless data[key]
 
-        if with_scores
+        results = if with_scores
           data[key].sort_by {|_,v| -v }
         else
           data[key].keys.sort_by {|k| -data[key][k] }
-        end[start..stop].flatten.map(&:to_s)
+        end
+
+        results[start..stop].flatten.map(&:to_s)
       end
 
       def zrangebyscore(key, min, max, *opts)
